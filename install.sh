@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 
 mkdir -p $HOME/.local/arch-updatehelper/
 

@@ -1,4 +1,4 @@
-#!usr/bin/python
+#!/usr/bin/python
 
 #Author: Shreesh Kumar Verma
 #Mail: tanaykumar103@gmail.com
