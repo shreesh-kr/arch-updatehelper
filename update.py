@@ -77,7 +77,7 @@ class Helper:
 		# check for difference between date of last update and current date
 		# if current date > lastdate then run package manager, else wait.
 		if info[1] + dt.timedelta(info[0]) <= dt.date.today():
-			print('alright... get ready to be update')
+			print('alright... get ready to be updated')
 			system('yay -Syu')
 			self.writeData()
 
