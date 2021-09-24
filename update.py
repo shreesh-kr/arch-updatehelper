@@ -79,6 +79,10 @@ class Helper:
 		if info[1] + dt.timedelta(info[0]) < dt.date.today():
 			print('alright... get ready to be updated')
 			exit_code = system('yay -Syu')
+			
+			# conditional to check for exit code of last statement
+			# if exit_code == 0, self.writeData() is called else
+			# output is generated
 			if exit_code == 0:
 				self.writeData()
 			else:
