@@ -5,7 +5,7 @@
 #Date: 22/09/2021
 
 
-from os import system
+import os
 import datetime as dt
 import pickle, argparse
 
@@ -14,7 +14,7 @@ class Helper:
 
 	# location of pickle file name 'data' to load
 	# change this variable as per requirement
-	data = '/home/shreesh/projects/arch-updatehelper/data'
+	data = os.environ['HOME'] + '/.local/arch-updatehelper/data'
 
 
 	def __init__(self):
@@ -91,7 +91,7 @@ class Helper:
 		# if current date > lastdate then run package manager, else wait.
 		if info[1] + dt.timedelta(info[0]) < dt.date.today():
 			print('alright... get ready to be updated')
-			exit_code = system('yay -Syu')
+			exit_code = os.system('yay -Syu')
 			
 			# conditional to check for exit code of last statement
 			# if exit_code == 0, self.writeData() is called else
