@@ -24,6 +24,7 @@ class Helper:
 
 		# --D optional argument added to change difference
 		parser.add_argument('--D', required= False, type=int, help='Value sets difference between dates')
+		parser.add_argument('-v', required=False, action='store_true', help='Show next updatable date')
 
 		# add all arguments to parser object
 		# self.args contains all the arguments passed and their values.
@@ -37,6 +38,18 @@ class Helper:
 			self.writeData()
 		else:
 			self.main()
+
+
+	# provided some extra info on next 'updateable-date'
+	def moreInfo(self):
+
+		info = self.getData()
+		
+		# lastDate of update + difference value - today's date,
+		# then some string slicing for better output.
+		info = str((info[1] + dt.timedelta(info[0])) - dt.date.today())
+		print(f'Next update will be available in {info[:6]}')
+
 
 	# this method retrieves data from pickle file named data stored at location self.data
 	# and return's list of [diff,lastDate]
@@ -87,9 +100,14 @@ class Helper:
 				self.writeData()
 			else:
 				print("Failed in updating")
-
+		
+		# checking if -v option provided
+		# if true, moreinfo() is called
 		else:
-			print('wait some time')
+			if self.args.v is True:
+				self.moreInfo()
+			
+			print('Wait some time')
 
 if __name__ == '__main__':
 	obj = Helper()
