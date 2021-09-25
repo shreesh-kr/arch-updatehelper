@@ -7,11 +7,12 @@ PS: Files are placed in $HOME/.local/arch-updatehelper
 
 **USAGE**  
 To run from terminal simply type _update_ and it will start its work.
-User can also add an argument --D to change the gap between two updates.
 If any changes in the file location are made, direct changes in the update.py file are necessary as per requirement.
 
 **Sample usage:**  
 to simple run script  
 $> update  
 to change difference between to dates to 3 days  
-$> update --D 3
+$> update --D 3  
+to check for more info on next info use following option  
+$> update -v
