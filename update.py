@@ -14,7 +14,8 @@ class Helper:
 
 	# location of pickle file name 'data' to load
 	# change this variable as per requirement
-	data = os.environ['HOME'] + '/.local/arch-updatehelper/data'
+	#data = os.environ['HOME'] + '/.local/arch-updatehelper/data'
+	data = os.path.expanduser('~/.local/arch-updatehelper/data')
 
 
 	def __init__(self):
@@ -36,6 +37,9 @@ class Helper:
 		# else self.main() is called and update is carried on
 		if self.args.D is not None:
 			self.writeData()
+
+		elif self.args.v is True:
+			self.moreInfo()
 		else:
 			self.main()
 
@@ -104,8 +108,8 @@ class Helper:
 		# checking if -v option provided
 		# if true, moreinfo() is called
 		else:
-			if self.args.v is True:
-				self.moreInfo()
+		#	if self.args.v is True:
+		#		self.moreInfo()
 			
 			print('Wait some time')
 
