@@ -51,8 +51,8 @@ class Helper:
 		
 		# lastDate of update + difference value - today's date,
 		# then some string slicing for better output.
-		info = str((info[1] + dt.timedelta(info[0])) - dt.date.today())
-		print(f'Next update will be available in {info[:6]}')
+		info = str((info[1] + dt.timedelta(info[0])))
+		print(f'Next update will be available after {info}')
 
 
 	# this method retrieves data from pickle file named data stored at location self.data
@@ -95,7 +95,7 @@ class Helper:
 		# if current date > lastdate then run package manager, else wait.
 		if info[1] + dt.timedelta(info[0]) < dt.date.today():
 			print('alright... get ready to be updated')
-			exit_code = os.system('yay -Syu')
+			exit_code = os.system('yay -Syyu')
 			
 			# conditional to check for exit code of last statement
 			# if exit_code == 0, self.writeData() is called else
