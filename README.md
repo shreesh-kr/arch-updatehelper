@@ -16,3 +16,5 @@ to change difference between to dates to 3 days
 $> update --D 3  
 to check for more info on next info use following option  
 $> update -v
+to change AUR helper
+$> update --A <helpername>
