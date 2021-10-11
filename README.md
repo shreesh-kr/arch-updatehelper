@@ -10,11 +10,11 @@ To run from terminal simply type _update_ and it will start its work.
 If any changes in the file location are made, direct changes in the update.py file are necessary as per requirement.
 
 **Sample usage:**  
-to simple run script  
+**To simply run script**  
 $> update  
-to change difference between to dates to 3 days  
+**To change difference between to dates to 3 days**  
 $> update --D 3  
-to check for more info on next info use following option  
-$> update -v
-to change AUR helper
-$> update --A <helpername>
+**To check for more information use the following option**  
+$> update -v  
+**To change AUR helper**  
+$> update --A _helpername_
