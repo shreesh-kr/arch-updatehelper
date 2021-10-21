@@ -2,8 +2,10 @@
 **A simple python script to help people(arch/ arch-based) with update habit.**
 
 **INSTALLATION**  
-run the install.sh file and it will handle all the work  
-PS: Files are placed in $HOME/.local/arch-updatehelper
+run the setup.py file and it will handle all the work  
+PS: Files are placed in $HOME/.local/arch-updatehelper  
+To **Uninstall** use:  
+$> setup.py --R  
 
 **USAGE**  
 To run from terminal simply type _update_ and it will start its work.
