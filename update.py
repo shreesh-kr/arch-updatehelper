@@ -89,7 +89,7 @@ class Helper:
 
 		# writes changes in 'helperName' with other remaining same
 		elif helperName is not None and str:
-			data_ = {'diff':self.getData()[0],'lastDate':self.dateToday, 'helper':helperName}
+			data_ = {'diff':self.getData()[0],'lastDate':self.getData()[1], 'helper':helperName}
 			print(f'AUR helper changed from {self.getData()[2]} to {helperName}')
 		
 		# writes default value only, return value from self.getData()
