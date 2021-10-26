@@ -1,4 +1,4 @@
-# version = 0.1
+# version = 0.2
 # date: 21/10/2021
 
 import argparse, os, pickle
@@ -22,18 +22,22 @@ class AUH:
 
     # multiple use variables
     PickleLocation = os.path.expanduser('~/projects/arch-updatehelper/test/data')
-    PickleData = {'diff': None,'lastDate': None, 'helper': None,'command': None}
+    #PickleData = {'diff': None,'lastDate': None, 'helper': None,'command': None}
     dateToday = dt.date.today()
 
     def __init__(self):
+
+        self.info = self.getInfo()
+
+        self.PickleData = {'diff': self.info[0],'lastDate': self.info[1], 'helper': self.info[2],'command': self.info[3]}
         
         
         parser = argparse.ArgumentParser(description='Options to modify difference between dates')
 
-        parser.add_argument('-D', required= False, type=int, help='Value sets difference between dates')
-        parser.add_argument('-V', action = 'store_true', required=False, help='Show next updatable date')
-        parser.add_argument('-A', required=False, type=str, help='Change AUR helper, Default is yay')
-        parser.add_argument('-C', required=False, type=str, help='Customize update command, Default= -Syyu')
+        parser.add_argument('-D', required= False, type=int, help="Value set's difference between dates\nUsage: update -D 3")
+        parser.add_argument('-V', action = 'store_true', required=False, help='Show last update date\nUsage: update -V')
+        parser.add_argument('-A', required=False, type=str, help='Change AUR helper, Default is yay.\nUsage: update -A yay')
+        parser.add_argument('-C', required=False, type=str, help='Customize update command, Default= -Syyu.\nUsage: update -C Syyu')
 
 
         # add all arguments to parser object
@@ -58,13 +62,9 @@ class AUH:
     def changeHelper(self):
 
         helper = self.args.A
-        info = self.getInfo()
-
-        self.PickleData['diff'] = info[0]
-        self.PickleData['lastDate'] = info[1]
+        
         self.PickleData['helper'] = helper
-        self.PickleData['command'] = info[3]
-
+        
         try:
             self.writeData()
             print(f'AUR helper changed to: {helper}')
@@ -78,9 +78,6 @@ class AUH:
         command = self.args.C
         info = self.getInfo()
 
-        self.PickleData['diff'] = info[0]
-        self.PickleData['lastDate'] = info[1]
-        self.PickleData['helper'] = info[2]
         self.PickleData['command'] = '-' + command
 
         try:
@@ -97,9 +94,6 @@ class AUH:
         info = self.getInfo()
         
         self.PickleData['diff'] = diff
-        self.PickleData['lastDate'] = info[1]
-        self.PickleData['helper'] = info[2]
-        self.PickleData['command'] = info[3]
 
         try:
             self.writeData()
@@ -144,22 +138,18 @@ class AUH:
         # if current date > lastdate then run package manager, else wait.
         if info[1] + dt.timedelta(days=info[0]) < self.dateToday:
             print('alright... get ready to be updated')
-            exit_code = os.system(f'{info[2]} + {info[3]}')
+            exit_code = os.system(f'sudo {info[2]} {info[3]}')
             
             # conditional to check for exit code of last statement
             # if exit_code == 0, self.writeData() is called else
             # output is generated
             if exit_code == 0:
                 self.writeDefault()
+                print(f'Exit Code: {exit_code}')
             else:
                 print("Failed in updating")
 
-        # checking if -v option provided
-        # if true, moreinfo() is called
         else:
-        #	if self.args.v is True:
-        #		self.moreInfo()
-            
             print('Wait some time')
 
     
@@ -176,11 +166,8 @@ class AUH:
         helper = self.args.A
         info =self.getInfo()
 
-        self.PickleData['diff'] = info[0]
         self.PickleData['lastDate'] = self.dateToday
-        self.PickleData['helper'] = info[2]
-        self.PickleData['command'] = info[3]
-
+       
         try:
             self.writeData()
             print('Update information saved')
