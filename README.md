@@ -15,8 +15,8 @@ If any changes in the file location are made, direct changes in the update.py fi
 **To simply run script**  
 $> update  
 **To change difference between to dates to 3 days**  
-$> update --D 3  
+$> update --d 3  
 **To check for more information use the following option**  
 $> update -v  
 **To change AUR helper**  
-$> update --A _helpername_
+$> update --a _helpername_
