@@ -1,9 +1,12 @@
+#!/usr/bin/python
+
 # version = 0.2
 # date: 21/10/2021
 
-import argparse, os, pickle
+import argparse, os, pickle, gi
 import datetime as dt
-
+gi.require_version('Gio','2.0')
+from gi.repository import Gio
 
 class AUH:
 
@@ -21,7 +24,7 @@ class AUH:
     '''
 
     # multiple use variables
-    PickleLocation = os.path.expanduser('~/projects/arch-updatehelper/test/data')
+    PickleLocation = os.path.expanduser('~/projects/arch-updatehelper/data')
     #PickleData = {'diff': None,'lastDate': None, 'helper': None,'command': None}
     dateToday = dt.date.today()
 
@@ -34,26 +37,26 @@ class AUH:
         
         parser = argparse.ArgumentParser(description='Options to modify difference between dates')
 
-        parser.add_argument('-D', required= False, type=int, help="Value set's difference between dates\nUsage: update -D 3")
-        parser.add_argument('-V', action = 'store_true', required=False, help='Show last update date\nUsage: update -V')
-        parser.add_argument('-A', required=False, type=str, help='Change AUR helper, Default is yay.\nUsage: update -A yay')
-        parser.add_argument('-C', required=False, type=str, help='Customize update command, Default= -Syyu.\nUsage: update -C Syyu')
-
+        parser.add_argument('-d', required= False, type=int, help="Value set's difference between dates\nUsage: update -D 3")
+        parser.add_argument('-v', action = 'store_true', required=False, help='Show last update date\nUsage: update -V')
+        parser.add_argument('-a', required=False, type=str, help='Change AUR helper, Default is yay.\nUsage: update -A yay')
+        parser.add_argument('-c', required=False, type=str, help='Customize update command, Default= -Syyu.\nUsage: update -C Syyu')
+        parser.add_argument('-n', required=False, action='store_true')
 
         # add all arguments to parser object
         # self.args contains all the arguments passed and their values.
         self.args = parser.parse_args()
 
-        if self.args.A is not None:
+        if self.args.a is not None:
             self.changeHelper()
 
-        elif self.args.C is not None:
+        elif self.args.c is not None:
             self.changeCommand()
 
-        elif self.args.D is not None:
+        elif self.args.d is not None:
             self.changeDifference()
 
-        elif self.args.V is True:
+        elif self.args.v is True:
             self.moreInfo()
 
         else:
@@ -90,7 +93,7 @@ class AUH:
 
     def changeDifference(self):
         
-        diff = self.args.D
+        diff = self.args.d
         info = self.getInfo()
         
         self.PickleData['diff'] = diff
@@ -123,10 +126,27 @@ class AUH:
     def moreInfo(self):
         
         info = self.getInfo()
-
-        output = f'''Difference: {info[0]}.\nLast updated on: {info[1]}.\nCurrent helper: {info[2]}.\nCommand used: {info[3]}'''
+        nextDate = dt.timedelta(days=info[0]) + info[1]
+        output = f'''Difference: {info[0]}.\nNext update on: {nextDate}.\nCurrent helper: {info[2]}.\nCommand used: {info[3]}'''
 
         print(output)
+
+
+    def notifier(self, exitcode):
+
+        Application = Gio.Application.new("update.notifier", Gio.ApplicationFlags.FLAGS_NONE)
+        Application.register()
+        Notification = Gio.Notification.new("Updater")
+        Icon = Gio.ThemedIcon.new("dialog-information")
+        Notification.set_icon(Icon)
+        #Application.send_notification(None, Notification)
+        if exitcode == 0:
+            Notification.set_body('Update executed with exit code 0; check output file\n at $HOME/updatelog.txt')
+        elif exitcode == 2:
+            Notification.set_body('Update executed with exit code 2; Wait some time.')
+        else:
+            Notification.set_body('Update failed with exit code 1; check output file\n at $HOME/updatelog.txt')
+        Application.send_notification(None, Notification)
 
 
     def runUpdater(self):
@@ -138,7 +158,12 @@ class AUH:
         # if current date > lastdate then run package manager, else wait.
         if info[1] + dt.timedelta(days=info[0]) < self.dateToday:
             print('alright... get ready to be updated')
-            exit_code = os.system(f'sudo {info[2]} {info[3]}')
+           # try:
+           #     os.system('rm $HOME/updatelog.txt')
+           # except:
+           #     pass
+            
+            exit_code = os.system(f'sudo {info[2]} {info[3]} --noconfirm')
             
             # conditional to check for exit code of last statement
             # if exit_code == 0, self.writeData() is called else
@@ -146,10 +171,16 @@ class AUH:
             if exit_code == 0:
                 self.writeDefault()
                 print(f'Exit Code: {exit_code}')
+    
+                # check if -n is provided   
+                if self.args.n:
+                    self.notifier(exit_code)
             else:
                 print("Failed in updating")
 
+            
         else:
+            self.notifier(exitcode=2)
             print('Wait some time')
 
     
@@ -163,7 +194,7 @@ class AUH:
 
 
     def writeDefault(self):
-        helper = self.args.A
+        helper = self.args.a
         info =self.getInfo()
 
         self.PickleData['lastDate'] = self.dateToday

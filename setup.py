@@ -25,7 +25,7 @@ def pickle_prep():
 	fileLoc = os.path.expanduser('~/.local/arch-updatehelper/data')
 	
 	# data to initiate pickle file
-	data = {'diff':3,'lastDate':dt.date.today(), 'helper': 'yay'}
+	data = {'diff':3,'lastDate':dt.date.today(), 'helper': 'pacman','command':'-Syu'}
 	
 	# finally writing the file at location <fileLoc>
 	with open(fileLoc, 'wb') as file:
